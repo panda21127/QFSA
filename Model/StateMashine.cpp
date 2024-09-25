@@ -30,6 +30,7 @@ void CStateMashine::readFile(QString filename)
     }
     else
     {
+        m_fileSetted = false;
         throw "No File";
         return;
     }
@@ -62,6 +63,10 @@ void CStateMashine::readFile(QString filename)
             i++;
         }
 
+        qDebug() << m_mapTransitions;
+        qDebug() << m_mapTransitions[key];
+        qDebug() << m_mapTransitions[key][symbol];
+
         QVector<QString> tempArray = m_mapTransitions[key][symbol];
         tempArray.push_back(word);
 
@@ -69,6 +74,8 @@ void CStateMashine::readFile(QString filename)
 
         qDebug() << str;
     }
+
+    m_fileSetted = true;
 
 }
 
@@ -80,7 +87,7 @@ void CStateMashine::determineGraph(bool isDeteminated)
         {
             for (QString symbol : m_mapTransitions[key].keys())
             {
-                determinateGraph[key][symbol] = m_mapTransitions[key][symbol][0];
+                m_determinateGraph[key][symbol] = m_mapTransitions[key][symbol][0];
             }
         }
 
@@ -164,7 +171,7 @@ void CStateMashine::determineGraph(bool isDeteminated)
                 str += state;
             }
 
-            determinateGraph[key][symbol] = str;
+            m_determinateGraph[key][symbol] = str;
         }
     }
 
@@ -172,7 +179,7 @@ void CStateMashine::determineGraph(bool isDeteminated)
     {
         bool changed = false;
 
-        for (QString key : determinateGraph.keys())
+        for (QString key : m_determinateGraph.keys())
         {
             bool flag = true;
 
@@ -180,11 +187,11 @@ void CStateMashine::determineGraph(bool isDeteminated)
             {
                 flag = false;
 
-                for (QString tempkey : determinateGraph.keys())
+                for (QString tempkey : m_determinateGraph.keys())
                 {
-                    for (QString symbols : determinateGraph[tempkey].keys())
+                    for (QString symbols : m_determinateGraph[tempkey].keys())
                     {
-                        if (key == determinateGraph[tempkey][symbols])
+                        if (key == m_determinateGraph[tempkey][symbols])
                         {
                             flag = true;
                             break;
@@ -201,7 +208,7 @@ void CStateMashine::determineGraph(bool isDeteminated)
             if (!flag)
             {
                 changed = true;
-                determinateGraph.remove(key);
+                m_determinateGraph.remove(key);
             }
         }
 
@@ -233,6 +240,11 @@ bool CStateMashine::isDeterminate()
     qDebug() << m_mapTransitions;
 }
 
+bool CStateMashine::getfileState()
+{
+    return m_fileSetted;
+}
+
 bool CStateMashine::isGood(QString str)
 {
     QString state = "q0";
@@ -241,9 +253,9 @@ bool CStateMashine::isGood(QString str)
     {
         QString symbol = QString(str[i]);
 
-        if (determinateGraph.value(state).contains(symbol))
+        if (m_determinateGraph.value(state).contains(symbol))
         {
-             state = determinateGraph[state][symbol];
+             state = m_determinateGraph[state][symbol];
         }
         else
         {

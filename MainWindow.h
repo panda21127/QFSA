@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <StateMashine.h>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class CMainWindow; }
 QT_END_NAMESPACE
@@ -16,6 +18,13 @@ public:
     ~CMainWindow();
 
 private:
+    void on_textInput_textChanged();
+
+    void on_btnLoad_clicked();
+
+private:
     Ui::CMainWindow *ui;
+
+    CStateMashine mashine;
 };
 #endif // CMAINWINDOW_H
