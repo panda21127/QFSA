@@ -17,7 +17,7 @@ public:
     CMainWindow(QWidget *parent = nullptr);
     ~CMainWindow();
 
-private:
+private slots:
     void on_textInput_textChanged();
 
     void on_btnLoad_clicked();
